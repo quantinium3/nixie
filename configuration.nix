@@ -3,6 +3,9 @@
 , pkgs
 , ...
 } @ args:
+let
+  secrets = import ./secrets.nix;
+in
 {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
@@ -34,7 +37,7 @@
     '';
   };
 
-  security.acme.defaults.email = "quant@quantinium.dev";
+  security.acme.defaults.email = secrets.acmeEmail;
   security.acme.acceptTerms = true;
 
   systemd.services.aurora = {
@@ -95,7 +98,7 @@
         forceSSL = true;
         enableACME = true;
         locations."/" = {
-            proxyPass = "http://127.0.0.1:4000/";
+          proxyPass = "http://127.0.0.1:4000/";
         };
       };
     };
@@ -125,14 +128,9 @@
     extraGroups = [ "wheel" "docker" ];
     createHome = true;
   };
-  users.users."nixie".openssh.authorizedKeys.keys = [
-    ""
-  ] ++ (args.extraPublicKeys or [ ]);
+  users.users."nixie".openssh.authorizedKeys.keys = secrets.sshKeys.quantinium ++ (args.extraPublicKeys or [ ]);
 
-  users.users.root.openssh.authorizedKeys.keys =
-    [
-      ""
-    ] ++ (args.extraPublicKeys or [ ]);
+  users.users.root.openssh.authorizedKeys.keys = secrets.sshKeys.quantinium ++ (args.extraPublicKeys or [ ]);
 
   system.stateVersion = "24.05";
 }
