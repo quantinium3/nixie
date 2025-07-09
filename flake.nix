@@ -15,10 +15,10 @@
       nixosConfigurations.digitalocean = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
-          ./digitalocean.nix
+          ./hosts/nixie/digitalocean.nix
           disko.nixosModules.disko
           { disko.devices.disk.disk1.device = "/dev/vda"; }
-          ./configuration.nix
+          ./hosts/nixie/configuration.nix
         ];
       };
     };
