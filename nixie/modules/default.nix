@@ -7,5 +7,6 @@
     ./nginx.nix
     ./virtualization.nix
     ./packages.nix
+    ./user.nix
   ];
 }
