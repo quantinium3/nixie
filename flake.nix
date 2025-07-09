@@ -33,7 +33,6 @@
             sops-nix.nixosModules.sops
           ];
         };
-
     in
     {
       nixosConfigurations = nixpkgs.lib.foldl'
