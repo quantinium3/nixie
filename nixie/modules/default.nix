@@ -8,5 +8,7 @@
     ./virtualization.nix
     ./packages.nix
     ./user.nix
+    ./aurora.nix
+    ./minidi.nix
   ];
 }
