@@ -1,5 +1,5 @@
 {
-  import = [
+  imports = [
     ./grub.nix
     ./networking.nix
     ./postgres.nix
