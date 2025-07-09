@@ -1,1 +1,1 @@
-nixos-rebuild switch --flake .#digitalocean --target-host nixie
+nixos-rebuild switch --flake . --target-host nixie

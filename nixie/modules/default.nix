@@ -9,6 +9,8 @@
     ./packages.nix
     ./user.nix
     ./aurora.nix
-    ./minidi.nix
+    ./minido.nix
+    ./lated.nix
+    ./sops.nix
   ];
 }

@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ pkgs, sops, ... }: {
   systemd.services.lated = {
     description = "Lated";
     after = [ "network.target" ];
@@ -9,9 +9,9 @@
       Restart = "always";
       User = "nixie";
       Environment = [
-        "PORT="
-        "USERNAME="
-        "PASSWORD="
+        ''PORT=${sops.secrets."myservices/lated/port"}''
+        ''USERNAME=${sops.secrets."myservices/lated/username"}''
+        ''PASSWORD=${sops.secrets."myservices/lated/password"}''
       ];
     };
   };
