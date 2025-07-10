@@ -10,6 +10,6 @@
     ./user.nix
     ./aurora.nix
     ./minido.nix
-    ./lated.nix
+/*     ./lated.nix */
   ];
 }

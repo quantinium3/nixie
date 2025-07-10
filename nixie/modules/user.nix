@@ -5,12 +5,12 @@
     createHome = true;
   };
   users.users."nixie".openssh.authorizedKeys.keys = [
-    "${config.sops.secrets.ssh_key.path}"
+    "ssh-ed25519 ${config.sops.secrets.ssh_key.path}"
   ] ++ (args.extraPublicKeys or [ ]);
 
   users.users.root.openssh.authorizedKeys.keys =
     [
-      "${config.sops.secrets.ssh_key.path}"
+      "ssh-ed25519 ${config.sops.secrets.ssh_key.path}"
     ] ++ (args.extraPublicKeys or [ ]);
 
 }
