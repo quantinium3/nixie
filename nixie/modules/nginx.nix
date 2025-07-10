@@ -109,7 +109,7 @@
         enableACME = true;
         locations = {
           "/" = {
-            proxyPass = "http://localhost:2342";
+            proxyPass = "http://localhost:8000";
             proxyWebsockets = true;
           };
         };

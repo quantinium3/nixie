@@ -1,8 +1,13 @@
 {config, pkgs, ...}: {
     services.grafana = {
         enable = true;
-        domain = "grafana.quantinium.dev";
-        port = "2342";
-        addr = "127.0.0.1";
+        settings = {
+            server = {
+                http_addr = "127.0.0.1";
+                http_port = 8000;
+                domain = "grafana.quantinium.dev";
+                serve_from_sub_path = true;
+            };
+        };
     };
 }

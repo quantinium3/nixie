@@ -12,5 +12,6 @@
     ./minido.nix
 /*     ./lated.nix */
     ./grafana.nix
+    ./prometheus.nix
   ];
 }
