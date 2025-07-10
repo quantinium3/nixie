@@ -11,5 +11,6 @@
     ./aurora.nix
     ./minido.nix
 /*     ./lated.nix */
+    ./grafana.nix
   ];
 }
