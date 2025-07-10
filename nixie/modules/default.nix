@@ -11,6 +11,5 @@
     ./aurora.nix
     ./minido.nix
     ./lated.nix
-    ./sops.nix
   ];
 }
