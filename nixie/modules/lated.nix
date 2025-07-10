@@ -7,6 +7,7 @@
       ExecStart = "${pkgs.bun}/bin/bun /home/nixie/lated/backend/server.js";
       WorkingDirectory = "/home/nixie/lated/backend";
       Restart = "always";
+      RestartSec = 5;
       User = "nixie";
       Environment = [
         "PORT=${config.sops.secrets."myservices/lated/port".path}"
