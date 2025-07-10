@@ -19,9 +19,6 @@
     "myservices/lated/password" = {
       owner = "nixie";
     };
-    ssh_key = {
-        owner = "nixie";
-    };
   };
   services.openssh.enable = true;
 
