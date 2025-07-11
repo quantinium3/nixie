@@ -13,5 +13,6 @@
 /*     ./lated.nix */
     ./grafana.nix
     ./prometheus.nix
+    ./loki.nix
   ];
 }
