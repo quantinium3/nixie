@@ -6,5 +6,7 @@
     pkgs.neofetch
     pkgs.bun
     pkgs.texliveFull
+
+    pkgs.openssl
   ];
 }

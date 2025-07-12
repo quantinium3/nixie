@@ -130,6 +130,16 @@
           };
         };
       };
+
+      "run.quantinium.dev" = {
+        forceSSL = true;
+        enableACME = true;
+        locations = {
+          "/" = {
+            proxyPass = "http://localhost:5000";
+          };
+        };
+      };
     };
   };
 }

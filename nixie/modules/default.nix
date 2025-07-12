@@ -15,6 +15,5 @@
     ./prometheus.nix
     ./loki.nix
     ./alloy.nix
-    ./coderunner.nix
   ];
 }
