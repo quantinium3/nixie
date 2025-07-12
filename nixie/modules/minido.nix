@@ -1,7 +1,7 @@
 { pkgs, ... }: {
   systemd.services.minido = {
     description = "Minido";
-    after = [ "network.target" ];
+    after = [ "network.target" "postgresql.service"];
     wantedBy = [ "multi-user.target" ];
     serviceConfig = {
       ExecStart = "${pkgs.bun}/bin/bun /home/nixie/minido/dist/index.js";

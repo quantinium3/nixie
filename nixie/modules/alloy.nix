@@ -25,7 +25,7 @@
       
       loki.write "grafana_loki" {
         endpoint {
-          url = "http://localhost:8500/loki/api/v1/push"
+          url = "http://127.0.0.1:8500/loki/api/v1/push"
 
           // basic_auth {
           //  username = "admin"
@@ -36,7 +36,7 @@
 
       prometheus.exporter.unix "integrations_node_exporter" {
         disable_collectors = ["ipvs", "btrfs", "infiniband", "xfs", "zfs"]
-        enable_collectors = ["meminfo"]
+        enable_collectors = ["meminfo", "cpu", "diskstats", "filesystem", "loadavg", "netdev"]
       
         filesystem {
           fs_types_exclude     = "^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|tmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs)$"
@@ -99,7 +99,7 @@
 
       prometheus.remote_write "local" {
         endpoint {
-          url = "http://prometheus:8250/api/v1/write"
+          url = "http://127.0.0.1:8250/api/v1/write"
         }
       }
 
@@ -126,7 +126,7 @@
 
       loki.write "local" {
         endpoint {
-          url = "http://loki:8500/loki/api/v1/push"
+          url = "http://127.0.0.1:8500/loki/api/v1/push"
         }
       }
     '';

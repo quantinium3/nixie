@@ -109,7 +109,23 @@
         enableACME = true;
         locations = {
           "/" = {
-            proxyPass = "http://localhost:8000";
+            proxyPass = "http://127.0.0.1:8000";
+            proxyWebsockets = true;
+          };
+        };
+      };
+
+      "monitoring.quantinium.dev" = {
+        forceSSL = true;
+        enableACME = true;
+        locations = {
+          "/prometheus/" = {
+            proxyPass = "http://127.0.0.1:8250";
+            proxyWebsockets = true;
+          };
+
+          "/loki/" = {
+            proxyPass = "http://127.0.0.1:8500";
             proxyWebsockets = true;
           };
         };
