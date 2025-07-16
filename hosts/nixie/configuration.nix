@@ -1,4 +1,4 @@
-{ modulesPath, config, inputs, ... } @ args: {
+{ modulesPath, stateVersion, ... } @ args: {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     (modulesPath + "/profiles/qemu-guest.nix")
@@ -24,6 +24,6 @@
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  system.stateVersion = "24.05";
+  system.stateVersion = stateVersion;
 }
 

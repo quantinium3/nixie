@@ -8,5 +8,7 @@
     pkgs.texliveFull
 
     pkgs.openssl
+
+    pkgs.fish
   ];
 }
