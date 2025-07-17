@@ -1,77 +1,72 @@
 {
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
 
-  inputs.disko.url = "github:nix-community/disko";
-  inputs.disko.inputs.nixpkgs.follows = "nixpkgs";
+    disko.url = "github:nix-community/disko";
+    disko.inputs.nixpkgs.follows = "nixpkgs";
 
-  inputs.sops-nix.url = "github:Mic92/sops-nix";
-  inputs.sops-nix.inputs.nixpkgs.follows = "nixpkgs";
+    sops-nix.url = "github:Mic92/sops-nix";
+    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
 
-  inputs.deploy-rs.url = "github:serokell/deploy-rs";
+    colmena.url = "github:zhaofengli/colmena";
+  };
 
   outputs =
     { self
     , nixpkgs
     , disko
     , sops-nix
-    , deploy-rs
+    , colmena
     , ...
     }@inputs:
     let
       system = "x86_64-linux";
-      user = "nixie";
       hosts = [
-        { hostname = "nixie"; stateVersion = "25.05"; }
+        { username = "nixie"; hostname = "nixie.quantinium.dev"; stateVersion = "25.05"; config = "./hosts/nixie/configuration.nix"; }
       ];
-      pkgs = import nixpkgs { inherit system; };
-      deployPkgs = import nixpkgs {
-        inherit system;
-        overlays = [
-          deploy-rs.overlays.default
-          (self: super: { deploy-rs = { inherit (pkgs) deploy-rs; lib = super.deploy-rs.lib; }; })
-        ];
-      };
-      makeSystem = { hostname, stateVersion }: nixpkgs.lib.nixosSystem
+      makeSystem = { username, hostname, stateVersion, config }: nixpkgs.lib.nixosSystem
         {
           system = system;
           specialArgs = {
-            inherit inputs stateVersion hostname user;
+            inherit inputs username hostname stateVersion;
           };
           modules = [
-            ./hosts/${hostname}/digitalocean.nix
+            ./hosts/${username}/digitalocean.nix
             disko.nixosModules.disko
             { disko.devices.disk.disk1.device = "/dev/vda"; }
-            ./hosts/${hostname}/configuration.nix
+            config
             sops-nix.nixosModules.sops
           ];
         };
     in
     {
-      nixosConfigurations = nixpkgs.lib.foldl'
+
+      colmenaHive = colmena.lib.makeHive self.outputs.colmena;
+      colmena = {
+        meta = {
+          nixpkgs = import nixpkgs { system = system; };
+        };
+        defaults = { pkgs, ... }: {
+          environment.systemPackages = with pkgs; [
+            vim
+            wget
+            curl
+          ];
+        };
+      } // nixpkgs.lib.foldl'
         (configs: host:
           configs // {
             "${host.hostname}" = makeSystem {
-              inherit (host) hostname stateVersion;
+              inherit (host) username hostname stateVersion config;
+            };
+
+            deployment = {
+              targetHost = host.hostname;
+              targetUser = host.username;
             };
           })
         { }
         hosts;
-
-      deploy.nodes.nixie = {
-        hostname = "nixie";
-        fastConnection = true;
-        interactiveSudo = true;
-        profile = {
-          nixie = {
-            sshUser = "nixie";
-            path = deployPkgs.deploy-rs.lib.activate.nixos self.nixosConfigurations.nixie;
-            user = "nixie";
-          };
-        };
-      };
-
-      checks = builtins.mapAttrs (system: deployLib: deployLib.deployChecks self.deploy) deploy-rs.lib;
-
     };
 
 }
