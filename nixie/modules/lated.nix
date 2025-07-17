@@ -1,4 +1,16 @@
 { pkgs, config, ... }: {
+  sops.secrets = {
+    "services/lated/port" = {
+      owner = "nixie";
+    };
+    "services/lated/username" = {
+      owner = "nixie";
+    };
+    "services/lated/password" = {
+      owner = "nixie";
+    };
+  };
+
   systemd.services.lated = {
     description = "Lated";
     after = [ "network.target" ];
@@ -9,9 +21,9 @@
       Restart = "always";
       User = "nixie";
       Environment = [
-        "PORT=${config.sops.secrets."myservices/lated/port".path}"
-        "USERNAME=${config.sops.secrets."myservices/lated/username".path}"
-        "PASSWORD=${config.sops.secrets."myservices/lated/password".path}"
+        "PORT=${config.sops.secrets."services/lated/port".path}"
+        "USERNAME=${config.sops.secrets."services/lated/username".path}"
+        "PASSWORD=${config.sops.secrets."services/lated/password".path}"
       ];
     };
   };
