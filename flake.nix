@@ -1,16 +1,12 @@
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
-
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
-
     colmena.url = "github:zhaofengli/colmena";
   };
-
   outputs =
     { self
     , nixpkgs
@@ -24,13 +20,6 @@
       hosts = [
         { username = "nixie"; hostname = "nixie.quantinium.dev"; stateVersion = "25.05"; config = "./hosts/nixie/configuration.nix"; diskDevice = "/dev/vda"; }
       ];
-      makeSystem = { username, hostname, stateVersion, config, diskDevice }: nixpkgs.lib.nixosSystem
-        {
-          system = system;
-          specialArgs = {
-            inherit inputs username hostname stateVersion;
-          };
-        };
     in
     {
       colmenaHive = colmena.lib.makeHive self.outputs.colmena;
@@ -47,11 +36,8 @@
         };
       } // builtins.listToAttrs (map
         (host: {
-          name = host.hostname;
-          value = makeSystem
-            {
-              inherit (host) username hostname stateVersion config diskDevice;
-            } // {
+          name = host.username;
+          value = { pkgs, ... }: {
             deployment = {
               targetHost = host.hostname;
               targetUser = host.username;
@@ -63,6 +49,7 @@
               host.config
               sops-nix.nixosModules.sops
             ];
+            system.stateVersion = host.stateVersion;
           };
         })
         hosts);
