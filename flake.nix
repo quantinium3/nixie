@@ -9,7 +9,6 @@
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
 
     colmena.url = "github:zhaofengli/colmena";
-    colmena.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
@@ -41,19 +40,19 @@
         };
     in
     {
-      colmenaHive = colmena.lib.makeHive
-        {
-          meta = {
-            nixpkgs = import nixpkgs { system = system; };
-          };
-          defaults = { pkgs, ... }: {
-            environment.systemPackages = with pkgs; [
-              vim
-              wget
-              curl
-            ];
-          };
-        } // builtins.listToAttrs (map
+      colmenaHive = colmena.lib.makeHive self.outputs.colmena;
+      colmena = {
+        meta = {
+          nixpkgs = import nixpkgs { system = system; };
+        };
+        defaults = { pkgs, ... }: {
+          environment.systemPackages = with pkgs; [
+            vim
+            wget
+            curl
+          ];
+        };
+      } // builtins.listToAttrs (map
         (host: {
           name = host.hostname;
           value = makeSystem
