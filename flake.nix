@@ -9,6 +9,7 @@
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
 
     colmena.url = "github:zhaofengli/colmena";
+    colmena.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
@@ -16,14 +17,15 @@
     , nixpkgs
     , disko
     , sops-nix
+    , colmena
     , ...
     }@inputs:
     let
       system = "x86_64-linux";
       hosts = [
-        { username = "nixie"; hostname = "nixie.quantinium.dev"; stateVersion = "25.05"; config = "./hosts/nixie/configuration.nix"; }
+        { username = "nixie"; hostname = "nixie.quantinium.dev"; stateVersion = "25.05"; config = "./hosts/nixie/configuration.nix"; diskDevice = "/dev/vda"; }
       ];
-      makeSystem = { username, hostname, stateVersion, config }: nixpkgs.lib.nixosSystem
+      makeSystem = { username, hostname, stateVersion, config, diskDevice }: nixpkgs.lib.nixosSystem
         {
           system = system;
           specialArgs = {
@@ -32,38 +34,38 @@
           modules = [
             ./hosts/${username}/digitalocean.nix
             disko.nixosModules.disko
-            { disko.devices.disk.disk1.device = "/dev/vda"; }
+            { disko.devices.disk.disk1.device = diskDevice; }
             config
             sops-nix.nixosModules.sops
           ];
         };
     in
     {
-      colmena = {
-        meta = {
-          nixpkgs = import nixpkgs { system = system; };
-        };
-        defaults = { pkgs, ... }: {
-          environment.systemPackages = with pkgs; [
-            vim
-            wget
-            curl
-          ];
-        };
-      } // nixpkgs.lib.foldl'
-        (configs: host:
-          configs // {
-            "${host.hostname}" = makeSystem {
-              inherit (host) username hostname stateVersion config;
-            };
-
+      colmenaHive = colmena.lib.makeHive
+        {
+          meta = {
+            nixpkgs = import nixpkgs { system = system; };
+          };
+          defaults = { pkgs, ... }: {
+            environment.systemPackages = with pkgs; [
+              vim
+              wget
+              curl
+            ];
+          };
+        } // builtins.listToAttrs (map
+        (host: {
+          name = host.hostname;
+          value = makeSystem
+            {
+              inherit (host) username hostname stateVersion;
+            } // {
             deployment = {
               targetHost = host.hostname;
               targetUser = host.username;
             };
-          })
-        { }
-        hosts;
+          };
+        })
+        hosts);
     };
-
 }

@@ -1,16 +1,19 @@
-{ pkgs, config, ... }@ args: {
-  users.users."nixie" = {
-    isNormalUser = true;
-    extraGroups = [ "wheel" "docker" ];
-    createHome = true;
+{ username, ... }: {
+  users = {
+    users = {
+      ${username} = {
+        isNormalUser = true;
+        extraGroups = [ "wheel" "docker" ];
+        createHome = true;
+        openssh.authorizedKeys.keys = [
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGnHBe+Aho86G+ZrwMGethZ6o7P4hcKte4a6unrfqi6Y quantinium@nixos"
+        ];
+      };
+      root = {
+        openssh.authorizedKeys.keys = [
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGnHBe+Aho86G+ZrwMGethZ6o7P4hcKte4a6unrfqi6Y quantinium@nixos"
+        ];
+      };
+    };
   };
-  users.users."nixie".openssh.authorizedKeys.keys = [
-    "ssh-ed25519 ${config.sops.secrets.ssh_key.path}"
-  ] ++ (args.extraPublicKeys or [ ]);
-
-  users.users.root.openssh.authorizedKeys.keys =
-    [
-      "ssh-ed25519 ${config.sops.secrets.ssh_key.path}"
-    ] ++ (args.extraPublicKeys or [ ]);
-
 }
