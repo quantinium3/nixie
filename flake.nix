@@ -16,7 +16,6 @@
     , nixpkgs
     , disko
     , sops-nix
-    , colmena
     , ...
     }@inputs:
     let
@@ -40,8 +39,6 @@
         };
     in
     {
-
-      colmenaHive = colmena.lib.makeHive self.outputs.colmena;
       colmena = {
         meta = {
           nixpkgs = import nixpkgs { system = system; };
