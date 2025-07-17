@@ -30,13 +30,6 @@
           specialArgs = {
             inherit inputs username hostname stateVersion;
           };
-          modules = [
-            ./hosts/${username}/digitalocean.nix
-            disko.nixosModules.disko
-            { disko.devices.disk.disk1.device = diskDevice; }
-            config
-            sops-nix.nixosModules.sops
-          ];
         };
     in
     {
@@ -57,12 +50,19 @@
           name = host.hostname;
           value = makeSystem
             {
-              inherit (host) username hostname stateVersion;
+              inherit (host) username hostname stateVersion config diskDevice;
             } // {
             deployment = {
               targetHost = host.hostname;
               targetUser = host.username;
             };
+            imports = [
+              ./hosts/${host.username}/digitalocean.nix
+              disko.nixosModules.disko
+              { disko.devices.disk.disk1.device = host.diskDevice; }
+              host.config
+              sops-nix.nixosModules.sops
+            ];
           };
         })
         hosts);
