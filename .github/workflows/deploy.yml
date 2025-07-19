@@ -30,7 +30,7 @@ jobs:
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_nixie
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/nixie
           chmod 600 ~/.ssh/nixie
           echo "${{ secrets.SSH_CONFIG }}" > ~/.ssh/config
           chmod 644 ~/.ssh/config
