@@ -31,7 +31,7 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_nixie
-          chmod 600 ~/.ssh/id_nixie
+          chmod 600 ~/.ssh/nixie
           echo "${{ secrets.SSH_CONFIG }}" > ~/.ssh/config
           chmod 644 ~/.ssh/config
 
