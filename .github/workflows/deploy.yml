@@ -38,4 +38,7 @@ jobs:
       - name: Deploy to VPS
         env:
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
-        run:  nix profile install github:serokell/deploy-rs
+        run: |
+          nix profile install github:serokell/deploy-rs
+          deploy
+
