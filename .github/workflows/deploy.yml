@@ -1,0 +1,41 @@
+name: Deploy NixOS Configuration
+on:
+  push:
+    branches:
+      - main
+  repository_dispatch:
+    types: [ fortune_cookie_updated ]
+concurrency:
+  group: deploy-vps
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: install nix action
+        uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Cachix
+        uses: cachix/cachix-action@v15
+        with:
+          name: quantinium3
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_nixie
+          chmod 600 ~/.ssh/id_nixie
+          echo "${{ secrets.SSH_CONFIG }}" > ~/.ssh/config
+          chmod 644 ~/.ssh/config
+
+      - name: Deploy to VPS
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run:  nix profile install github:serokell/deploy-rs

@@ -9,6 +9,9 @@
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
 
     deploy-rs.url = "github:serokell/deploy-rs";
+
+    fortune-cookie.url =  "github:quantinium3/fortune-cookie";
+    fortune-cookie.inputs.nixpkgs.follows = "nixpkgs";
   };
   outputs =
     { self
