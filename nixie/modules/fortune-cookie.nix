@@ -5,14 +5,13 @@
 
   environment.systemPackages = [ inputs.fortune-cookie.packages.${pkgs.system}.default ];
 
-  systemd.services.backend = {
-    description = "Rust Backend Service";
+  systemd.services.fortune-cookie = {
+    description = "Fortune Cookie Backend";
     after = [ "network.target" ];
     wantedBy = [ "multi-user.target" ];
     serviceConfig = {
       ExecStart = "${inputs.fortune-cookie.packages.${pkgs.system}.default}/bin/fortune-cookie";
       Restart = "always";
-      TimeoutStartSec = 30;
       StandardOutput = "journal";
       StandardError = "journal";
     };
