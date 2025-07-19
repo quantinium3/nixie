@@ -40,7 +40,4 @@ jobs:
           nix run github:serokell/deploy-rs -- .#vps
 
       - name: Deploy to VPS
-        run: |
-          nix profile install github:serokell/deploy-rs
-          deploy
-
+        run: nix run github:serokell/deploy-rs
