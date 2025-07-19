@@ -1,12 +1,7 @@
-{ lib, pkgs, config, ... }:
-{
-  sops.secrets.ssl_certificate_pem = {
-    owner = "nixie";
-    mode = "0600";
-  };
-  sops.secrets.ssl_certificate_key = {
-    owner = "nixie";
-    mode = "0600";
+{ lib, pkgs, ... }: {
+  security = {
+    acme.acceptTerms = true;
+    acme.defaults.email = "quant@quantinium.dev";
   };
 
   services.nginx = {
@@ -64,8 +59,7 @@
     virtualHosts = {
       "natsuki.quantinium.dev" = {
         forceSSL = true;
-        sslCertificate = config.sops.secrets.ssl_certificate_pem.path;
-        sslCertificateKey = config.sops.secrets.ssl_certificate_key.path;
+        enableACME = true;
         locations."/" = {
           proxyPass = "http://127.0.0.1";
           return = "200 '<html><body>It works</body></html>'";
@@ -81,23 +75,15 @@
 
       "lucy.quantinium.dev" = {
         forceSSL = true;
-        sslCertificate = config.sops.secrets.ssl_certificate_pem.path;
-        sslCertificateKey = config.sops.secrets.ssl_certificate_key.path;
+        enableACME = true;
         locations."/" = {
           proxyPass = "http://127.0.0.1:4000/";
-          extraConfig = ''
-            proxy_set_header Host $host;
-            proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $scheme;
-          '';
         };
       };
 
       "minido.quantinium.dev" = {
         forceSSL = true;
-        sslCertificate = config.sops.secrets.ssl_certificate_pem.path;
-        sslCertificateKey = config.sops.secrets.ssl_certificate_key.path;
+        enableACME = true;
         locations."/" = {
           proxyPass = "http://127.0.0.1:4001/";
           extraConfig = ''
@@ -111,8 +97,7 @@
 
       "lated.quantinium.dev" = {
         forceSSL = true;
-        sslCertificate = config.sops.secrets.ssl_certificate_pem.path;
-        sslCertificateKey = config.sops.secrets.ssl_certificate_key.path;
+        enableACME = true;
         locations."/" = {
           proxyPass = "http://localhost:5001/";
           extraConfig = ''
@@ -126,81 +111,46 @@
 
       "grafana.quantinium.dev" = {
         forceSSL = true;
-        sslCertificate = config.sops.secrets.ssl_certificate_pem.path;
-        sslCertificateKey = config.sops.secrets.ssl_certificate_key.path;
+        enableACME = true;
         locations = {
           "/" = {
             proxyPass = "http://127.0.0.1:8000";
             proxyWebsockets = true;
-            extraConfig = ''
-              proxy_set_header Host $host;
-              proxy_set_header X-Real-IP $remote_addr;
-              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-              proxy_set_header X-Forwarded-Proto $scheme;
-            '';
           };
         };
       };
 
       "monitoring.quantinium.dev" = {
         forceSSL = true;
-        sslCertificate = config.sops.secrets.ssl_certificate_pem.path;
-        sslCertificateKey = config.sops.secrets.ssl_certificate_key.path;
+        enableACME = true;
         locations = {
           "/prometheus/" = {
             proxyPass = "http://127.0.0.1:8250";
             proxyWebsockets = true;
-            extraConfig = ''
-              proxy_set_header Host $host;
-              proxy_set_header X-Real-IP $remote_addr;
-              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-              proxy_set_header X-Forwarded-Proto $scheme;
-            '';
           };
 
           "/loki/" = {
             proxyPass = "http://127.0.0.1:8500";
             proxyWebsockets = true;
-            extraConfig = ''
-              proxy_set_header Host $host;
-              proxy_set_header X-Real-IP $remote_addr;
-              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-              proxy_set_header X-Forwarded-Proto $scheme;
-            '';
           };
         };
       };
 
       "run.quantinium.dev" = {
         forceSSL = true;
-        sslCertificate = config.sops.secrets.ssl_certificate_pem.path;
-        sslCertificateKey = config.sops.secrets.ssl_certificate_key.path;
+        enableACME = true;
         locations = {
           "/" = {
             proxyPass = "http://localhost:5000";
-            extraConfig = ''
-              proxy_set_header Host $host;
-              proxy_set_header X-Real-IP $remote_addr;
-              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-              proxy_set_header X-Forwarded-Proto $scheme;
-            '';
           };
         };
       };
-
       "fortune.quantinium.dev" = {
         forceSSL = true;
-        sslCertificate = config.sops.secrets.ssl_certificate_pem.path;
-        sslCertificateKey = config.sops.secrets.ssl_certificate_key.path;
+        enableACME = true;
         locations = {
           "/" = {
-            proxyPass = "http://localhost:3000";
-            extraConfig = ''
-              proxy_set_header Host $host;
-              proxy_set_header X-Real-IP $remote_addr;
-              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-              proxy_set_header X-Forwarded-Proto $scheme;
-            '';
+            proxyPass = "http://localhost:5000";
           };
         };
       };

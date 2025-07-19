@@ -1,31 +1,33 @@
-name: Update Flake Lock
+name: update flake lock
 on:
   repository_dispatch:
     types: [ fortune_cookie_updated ]
+
 concurrency:
   group: update-flake
   cancel-in-progress: true
+
 jobs:
   update:
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - name: Checkout repository
+      - name: checkout repo
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          ref: master
 
-      - name: Install Nix
+      - name: install nix
         uses: cachix/install-nix-action@v31
-        with:
-          github_access_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Update flake.lock
+      - name: update flake.lock
         run: nix flake lock --update-input fortune-cookie
 
-      - name: Commit changes
+      - name: verify update
+        run: git diff --exit-code flake.lock || echo "flake.lock updated"
+
+      - name: commit changes
         uses: stefanzweifel/git-auto-commit-action@v6
         with:
-          commit_message: "chore: update fortune input in flake.lock"
-
+          commit_message: "chore: update fortune-cookie input in flake.lock"
