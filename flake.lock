@@ -82,11 +82,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1752937288,
-        "narHash": "sha256-uhMwLCa/OVoMNI26of29BVaRcEUSlVerg1nLQuvSrjE=",
+        "lastModified": 1752938176,
+        "narHash": "sha256-lwy9jBGQthXVdtjatA+JYsI/gD27gRcjEAWfwIsYXk4=",
         "owner": "quantinium3",
         "repo": "fortune-cookie",
-        "rev": "ede3dd467a0ff74251223bacc5d522eed3698cc3",
+        "rev": "a1ce44c06ffe5952b3ae599794830e621f8fd082",
         "type": "github"
       },
       "original": {
