@@ -34,6 +34,7 @@ jobs:
           chmod 600 ~/.ssh/nixie
           echo "${{ secrets.SSH_CONFIG }}" > ~/.ssh/config
           chmod 644 ~/.ssh/config
+          echo "${{ secrets.SSH_KNOWN_HOSTS }}" >> ~/.ssh/known_hosts
 
       - name: Deploy to VPS
         env:
