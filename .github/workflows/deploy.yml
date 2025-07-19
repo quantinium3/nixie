@@ -2,7 +2,7 @@ name: Deploy NixOS Configuration
 on:
   push:
     branches:
-      - main
+      - master
   repository_dispatch:
     types: [ fortune_cookie_updated ]
 concurrency:
