@@ -62,13 +62,14 @@
         (host: {
           name = host.username;
           value = {
-            hostname = host.username;
+            hostname = host.hostname;
             fastConnection = true;
             profiles = {
               nixie = {
                 sshUser = "root";
                 path = deployPkgs.deploy-rs.lib.activate.nixos self.nixosConfigurations."${host.username}";
                 user = "root";
+                sshOpts = ["-i" "~/.ssh/nixie"];
               };
             };
           };
