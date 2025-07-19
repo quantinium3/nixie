@@ -10,7 +10,7 @@
     ./user.nix
     ./aurora.nix
     ./minido.nix
-    ./lated.nix
+/*     ./lated.nix */
     ./grafana.nix
     ./prometheus.nix
     ./loki.nix

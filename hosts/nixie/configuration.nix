@@ -1,25 +1,34 @@
-{ modulesPath, stateVersion, ... } @ args: {
+{ modulesPath, stateVersion, input, ... } @ args: {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     (modulesPath + "/profiles/qemu-guest.nix")
     ./disk-config.nix
     ../../nixie/modules
   ];
-  sops.defaultSopsFile = ../../secrets/secrets.yaml;
-  sops.defaultSopsFormat = "yaml";
-  sops.age.keyFile = "/home/nixie/.config/sops/age/keys.txt";
+
+  sops = {
+    defaultSopsFile = ../../secrets/secrets.yaml;
+    defaultSopsFormat = "yaml";
+
+    age = {
+        sshKeyPaths = ["/etc/ssh/ssh_host_ed25519_key"];
+        keyFile = "/var/lib/sops-nix/keys.txt";
+        generateKey = true;
+    };
+  };
 
   sops.secrets = {
-    "myservices/lated/port" = {
+    "services/lated/port" = {
       owner = "nixie";
     };
-    "myservices/lated/username" = {
+    "services/lated/username" = {
       owner = "nixie";
     };
-    "myservices/lated/password" = {
+    "services/lated/password" = {
       owner = "nixie";
     };
   };
+
   services.openssh.enable = true;
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];

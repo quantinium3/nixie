@@ -1,17 +1,28 @@
-{ username, ... }: {
+{ username, config, ... }: {
+
+  sops.secrets = {
+    "nixie/password" = {
+      owner = "nixie";
+      neededForUsers = true;
+    };
+  };
+
   users = {
+    mutableUsers = true;
+
     users = {
       ${username} = {
         isNormalUser = true;
         extraGroups = [ "wheel" "docker" ];
+        hashedPasswordFile = config.sops.secrets."nixie/password".path;
         createHome = true;
         openssh.authorizedKeys.keys = [
-          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGnHBe+Aho86G+ZrwMGethZ6o7P4hcKte4a6unrfqi6Y quantinium@nixos"
+          (builtins.readFile ../../secrets/keys/id_nixie.pub)
         ];
       };
       root = {
         openssh.authorizedKeys.keys = [
-          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGnHBe+Aho86G+ZrwMGethZ6o7P4hcKte4a6unrfqi6Y quantinium@nixos"
+          (builtins.readFile ../../secrets/keys/id_nixie.pub)
         ];
       };
     };
