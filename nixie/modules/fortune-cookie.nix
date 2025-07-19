@@ -1,7 +1,7 @@
 { pkgs, inputs, ... }:
 {
-  nix.settings.substituters = [ "https://quantinium3.cachix.org" ];
-  nix.settings.trusted-public-keys = [ (builtins.readFile ../../secrets/keys/cachix_pub_key)  ];
+  /* nix.settings.substituters = [ "https://quantinium3.cachix.org" ];
+  nix.settings.trusted-public-keys = [ (builtins.readFile ../../secrets/keys/cachix_pub_key)  ]; */
 
   environment.systemPackages = [ inputs.fortune-cookie.packages.${pkgs.system}.default ];
 
