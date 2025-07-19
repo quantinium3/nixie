@@ -10,11 +10,8 @@
     after = [ "network.target" ];
     wantedBy = [ "multi-user.target" ];
     serviceConfig = {
-      ExecStart = "${inputs.fortune-cookie.packages.${pkgs.system}.default}/bin/backend";
+      ExecStart = "${inputs.fortune-cookie.packages.${pkgs.system}.default}/bin/fortune-cookie";
       Restart = "always";
-      DynamicUser = true;
-      Environment = [ "RUST_LOG=info" ];
-      ExecStartPost = "${pkgs.curl}/bin/curl --retry 3 --fail http://localhost:8080/health";
       TimeoutStartSec = 30;
       StandardOutput = "journal";
       StandardError = "journal";
