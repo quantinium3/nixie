@@ -9,8 +9,6 @@
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
 
     deploy-rs.url = "github:serokell/deploy-rs";
-
-    fortune-cookie.url =  "github:quantinium3/fortune-cookie";
   };
   outputs =
     { self
@@ -61,7 +59,7 @@
         (host: {
           name = host.username;
           value = {
-            hostname = host.hostname;
+            hostname = "143.244.130.240";
             fastConnection = true;
             profiles = {
               nixie = {

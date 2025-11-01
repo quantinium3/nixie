@@ -3,12 +3,8 @@
     pkgs.curl
     pkgs.gitMinimal
     pkgs.neovim
-    pkgs.neofetch
     pkgs.bun
-    pkgs.texliveFull
-
     pkgs.openssl
-
     pkgs.fish
   ];
 }
