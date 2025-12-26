@@ -1,0 +1,14 @@
+{
+	services.nginx = {
+		enable = true;
+
+    virtualHosts."nixie.quantinium.dev" = {
+			addSSL = true;
+			sslCertificate = "/var/lib/cloudflare/nixie.quantinium.dev.pem";
+			sslCertificateKey = "/var/lib/cloudflare/nixie.quantinium.dev.key";
+			locations."/" = {
+				proxyPass = "http://127.0.0.1:3000";
+				proxyWebsockets = false;
+		  };
+    };
+}
