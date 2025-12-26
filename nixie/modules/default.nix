@@ -5,6 +5,6 @@
 		./packages.nix
 		./user.nix
 		./eris.nix
-		./nginx.nix
+/*		./nginx.nix */
   ];
 }
