@@ -3,8 +3,9 @@
     pkgs.curl
     pkgs.gitMinimal
     pkgs.neovim
-    pkgs.bun
+		pkgs.fastfetch
+		pkgs.lsd
+    pkgs.wget
     pkgs.openssl
-    pkgs.fish
   ];
 }

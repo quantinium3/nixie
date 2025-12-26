@@ -4,5 +4,6 @@
 		./networking.nix
 		./packages.nix
 		./user.nix
+		./eris.nix
   ];
 }
