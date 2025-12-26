@@ -1,5 +1,5 @@
 {
-	services.nginx = {
+	/*services.nginx = {
 		enable = true;
 
     virtualHosts."nixie.quantinium.dev" = {
@@ -10,5 +10,20 @@
 				proxyPass = "http://127.0.0.1:3000";
 				proxyWebsockets = false;
 		  };
+    }; 
+  };*/
+
+services.nginx = {
+  enable = true;
+ /* virtualHosts.localhost = {
+    locations."/" = {
+      return = "200 '<html><body>It works</body></html>'";
+      extraConfig = ''
+        default_type text/html;
+      '';
     };
+  }; */
+};
 }
+
+
