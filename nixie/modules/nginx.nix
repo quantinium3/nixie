@@ -1,5 +1,5 @@
 {
-	/*services.nginx = {
+	services.nginx = {
 		enable = true;
 
     virtualHosts."nixie.quantinium.dev" = {
@@ -11,19 +11,11 @@
 				proxyWebsockets = false;
 		  };
     }; 
-  };*/
+  };
 
-services.nginx = {
-  enable = true;
- /* virtualHosts.localhost = {
-    locations."/" = {
-      return = "200 '<html><body>It works</body></html>'";
-      extraConfig = ''
-        default_type text/html;
-      '';
-    };
-  }; */
-};
+  systemd.tmpfiles.rules = [
+    "d /var/log/nginx 0750 nginx nginx -"
+  ];
 }
 
 

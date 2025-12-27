@@ -68,7 +68,7 @@
     ];
     log-driver = "journald";
     extraOptions = [
-/*    "--health-cmd=pg_isready -U eris_user -d eris_db" */
+      "--health-cmd=pg_isready -U eris_user -d eris_db"
       "--health-interval=10s"
       "--health-retries=5"
       "--health-timeout=5s"
