@@ -8,6 +8,11 @@
     dockerCompat = true;
   };
 
+	sops.secrets = {
+		"services/eris/env" = { };
+		"services/eris-db/env" = { };
+	};
+
   networking.firewall.interfaces = let
     matchAll = if !config.networking.nftables.enable then "podman+" else "podman*";
   in {
@@ -18,12 +23,9 @@
 
   virtualisation.oci-containers.containers."eris-app" = {
     image = "ghcr.io/quantinium3/eris:v-0.1.0";
-    environment = {
-      "DATABASE_URL" = "";
-      "LASTFM_APIKEY" = "";
-      "LASTFM_URI" = "";
-      "LASTFM_USERNAME" = "";
-    };
+		environmentFiles = [
+			config.sops.secrets."services/eris/env".path
+		];
     ports = [
       "3000:3000/tcp"
     ];
@@ -54,12 +56,10 @@
     ];
   };
   virtualisation.oci-containers.containers."eris-db" = {
-    image = "postgres";
-    environment = {
-      "POSTGRES_DB" = "";
-      "POSTGRES_PASSWORD" = "";
-      "POSTGRES_USER" = "";
-    };
+    image = "postgres:16-alpine";
+		environmentFiles = [
+			config.sops.secrets."services/eris-db/env".path
+		];
     volumes = [
       "eris_postgres_data:/var/lib/postgresql/data:rw"
     ];
@@ -68,7 +68,7 @@
     ];
     log-driver = "journald";
     extraOptions = [
-      "--health-cmd=pg_isready -U eris_user -d eris_db"
+/*    "--health-cmd=pg_isready -U eris_user -d eris_db" */
       "--health-interval=10s"
       "--health-retries=5"
       "--health-timeout=5s"

@@ -1,0 +1,12 @@
+keys:
+  - &users:
+      - &quantinium age1eyjqqqvg8wvpvpkpsss2c9xrpgjzgus9qxs6pyd475rfdfctqfksw7ezu7
+  - &hosts:
+      - &nixie age1le35pqn5h2ww3jzev0yk782xhsqz22xy3qz4u2j32v4tqzt5ygnqwfss3u
+
+creation_rules:
+  - path_regex: secrets/[^/]+.(yaml|json|env|ini)$
+    key_groups:
+    - age:
+        - *quantinium
+        - *nixie
