@@ -7,5 +7,7 @@
 		pkgs.lsd
     pkgs.wget
     pkgs.openssl
+		pkgs.wezterm
+		pkgs.mosh
   ];
 }
