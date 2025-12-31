@@ -6,5 +6,6 @@
 		./user.nix
 		./eris.nix
 		./nginx.nix
+		./xunback.nix
   ];
 }
