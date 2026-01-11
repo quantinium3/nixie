@@ -35,7 +35,7 @@
     log-driver = "journald";
     extraOptions = [
       "--network-alias=app"
-      "--network=eris_default"
+      "--network=nixie"
     ];
   };
   systemd.services."podman-eris-app" = {
@@ -43,10 +43,10 @@
       Restart = lib.mkOverride 90 "always";
     };
     after = [
-      "podman-network-eris_default.service"
+      "podman-network-nixie.service"
     ];
     requires = [
-      "podman-network-eris_default.service"
+      "podman-network-nixie.service"
     ];
     partOf = [
       "podman-compose-eris-root.target"
@@ -69,11 +69,12 @@
     log-driver = "journald";
     extraOptions = [
       "--health-cmd=pg_isready -U eris_user -d eris_db"
+      "--health-cmd=pg_isready -U xunback_user -d xunback_db"
       "--health-interval=10s"
       "--health-retries=5"
       "--health-timeout=5s"
       "--network-alias=db"
-      "--network=eris_default"
+      "--network=nixie"
     ];
   };
   systemd.services."podman-eris-db" = {
@@ -81,11 +82,11 @@
       Restart = lib.mkOverride 90 "always";
     };
     after = [
-      "podman-network-eris_default.service"
+      "podman-network-nixie.service"
       "podman-volume-eris_postgres_data.service"
     ];
     requires = [
-      "podman-network-eris_default.service"
+      "podman-network-nixie.service"
       "podman-volume-eris_postgres_data.service"
     ];
     partOf = [
@@ -96,15 +97,15 @@
     ];
   };
 
-  systemd.services."podman-network-eris_default" = {
+  systemd.services."podman-network-nixie" = {
     path = [ pkgs.podman ];
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
-      ExecStop = "podman network rm -f eris_default";
+      ExecStop = "podman network rm -f nixie";
     };
     script = ''
-      podman network inspect eris_default || podman network create eris_default
+      podman network inspect nixie || podman network create nixie
     '';
     partOf = [ "podman-compose-eris-root.target" ];
     wantedBy = [ "podman-compose-eris-root.target" ];

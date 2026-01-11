@@ -20,12 +20,10 @@
 				proxyPass = "http://127.0.0.1:3001";
 				proxyWebsockets = false;
 		  };
-		}
+		};
   };
 
   systemd.tmpfiles.rules = [
     "d /var/log/nginx 0750 nginx nginx -"
   ];
 }
-
-

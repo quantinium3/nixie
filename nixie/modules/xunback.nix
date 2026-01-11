@@ -3,11 +3,19 @@
 {
 	sops.secrets = {
 		"services/xunback/env" = { };
-		"services/xunback-db/env" = { };
 	};
+	/*
+		1. Create the user and database manually:
+		sudo podman exec -it eris-db psql -U eris_user -d eris_db
+
+		CREATE USER xunback_user WITH PASSWORD 'xunback_password';
+		CREATE DATABASE xunback_db OWNER xunback_user;
+		GRANT ALL PRIVILEGES ON DATABASE xunback_db TO xunback_user;
+		\q
+	*/
 
   virtualisation.oci-containers.containers."xunback-app" = {
-    image = "ghcr.io/xunback:v-0.1.0";
+    image = "ghcr.io/quantinium3/xunback:v-0.1.0";
 		environmentFiles = [
 			config.sops.secrets."services/xunback/env".path
 		];
@@ -15,12 +23,12 @@
       "3001:3000/tcp"
     ];
     dependsOn = [
-      "xunback-db"
+      "eris-db"
     ];
     log-driver = "journald";
     extraOptions = [
-      "--network-alias=app"
-      "--network=xunback_default"
+      "--network-alias=xunback-app"
+      "--network=nixie"
     ];
   };
   systemd.services."podman-xunback-app" = {
@@ -28,10 +36,12 @@
       Restart = lib.mkOverride 90 "always";
     };
     after = [
-      "podman-network-xunback_default.service"
+      "podman-network-nixie.service"
+      "podman-eris-db.service"
     ];
     requires = [
-      "podman-network-xunback_default.service"
+      "podman-network-nixie.service"
+      "podman-eris-db.service"
     ];
     partOf = [
       "podman-compose-xunback-root.target"
@@ -39,73 +49,6 @@
     wantedBy = [
       "podman-compose-xunback-root.target"
     ];
-  };
-  virtualisation.oci-containers.containers."xunback-db" = {
-    image = "postgres:16-alpine";
-		environmentFiles = [
-			config.sops.secrets."services/xunback-db/env".path
-		];
-    volumes = [
-      "xunback_postgres_data:/var/lib/postgresql/data:rw"
-    ];
-    ports = [
-      "5432:5432/tcp"
-    ];
-    log-driver = "journald";
-    extraOptions = [
-      "--health-cmd=pg_isready -U xunbao_user -d xunbao_db"
-      "--health-interval=10s"
-      "--health-retries=5"
-      "--health-timeout=5s"
-      "--network-alias=db"
-      "--network=xunback_default"
-    ];
-  };
-  systemd.services."podman-xunback-db" = {
-    serviceConfig = {
-      Restart = lib.mkOverride 90 "always";
-    };
-    after = [
-      "podman-network-xunback_default.service"
-      "podman-volume-xunback_postgres_data.service"
-    ];
-    requires = [
-      "podman-network-xunback_default.service"
-      "podman-volume-xunback_postgres_data.service"
-    ];
-    partOf = [
-      "podman-compose-xunback-root.target"
-    ];
-    wantedBy = [
-      "podman-compose-xunback-root.target"
-    ];
-  };
-
-  systemd.services."podman-network-xunback_default" = {
-    path = [ pkgs.podman ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-      ExecStop = "podman network rm -f xunback_default";
-    };
-    script = ''
-      podman network inspect xunback_default || podman network create xunback_default
-    '';
-    partOf = [ "podman-compose-xunback-root.target" ];
-    wantedBy = [ "podman-compose-xunback-root.target" ];
-  };
-
-  systemd.services."podman-volume-xunback_postgres_data" = {
-    path = [ pkgs.podman ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-    };
-    script = ''
-      podman volume inspect xunback_postgres_data || podman volume create xunback_postgres_data
-    '';
-    partOf = [ "podman-compose-xunback-root.target" ];
-    wantedBy = [ "podman-compose-xunback-root.target" ];
   };
 
   systemd.targets."podman-compose-xunback-root" = {
